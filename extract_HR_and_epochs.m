@@ -10,7 +10,7 @@ figure;hist(x,100);
 % you can see that the main peak is the subthreshold values, so the peak is
 % at the extremities
 [pks,locs] = findpeaks(x,ECG_srate,'MinPeakDistance',.4,'MinPeakHeight',3); % look for peaks at least .4 sec away, and 3 SD high
-figure;plot(time,x);hold on;scatter(locs,pks,'r');title('see if we got the peaks right')
+figure;plot(time_ECG,x);hold on;scatter(locs,pks,'r');title('see if we got the peaks right')
 IBI=diff(locs); %interbeat interval
 min_IBI=min(IBI); %let's see what the shortest one is
 n_epochs=length(locs)-1; % let's discard the last epoch, since the last hearbeat could be too close to the end
