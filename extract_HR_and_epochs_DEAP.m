@@ -8,13 +8,15 @@ ECG_srate=128;
 PS=squeeze(data(itrial,39,3*ECG_srate+1:end)); % plethysmograph; let's discard the 3 seconds baseline
 time_ECG=(0:length(PS)-1)/ECG_srate;
 figure;plot(time_ECG,PS);title('plethysmograph signal');
-%% now let's detect R peaks, we need to detrend the signal
+%% now let's detect R peaks from plethysmogram, we need to detrend the signal, and differentiate it twice
 lambda_max = l1tf_lambdamax(PS);
 [trend,status] = l1tf(PS, 0.001*lambda_max);
 PS_d=PS-trend;
 PS_dz=zscore(PS_d);
-[pks,locs] = findpeaks(PS_dz,ECG_srate,'MinPeakDistance',.4,'MinPeakHeight',.01);% look for peaks at least .4 sec away
-figure;plot(time_ECG,PS_dz);hold on;scatter(locs,pks,'r');title('see if we got the peaks right')
+ddPS=smooth(diff(PS_dz,2));
+%%
+[pks,locs] = findpeaks(ddPS,ECG_srate,'MinPeakDistance',.4,'MinPeakHeight',.01);% look for peaks at least .4 sec away
+figure;plot(time_ECG(2:end-1),ddPS);hold on;scatter(locs,pks,'r');title('see if we got the peaks right')
 IBI=diff(locs); %interbeat interval
 min_IBI=min(IBI); %let's see what the shortest one is
 n_epochs=length(locs)-1; % let's discard the last epoch, since the last hearbeat could be too close to the end
