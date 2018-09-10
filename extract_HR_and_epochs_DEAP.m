@@ -6,19 +6,16 @@ load('C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s01.mat') %load the ful
 itrial=1; % here you choose a trial, eventually you can loop on it
 ECG_srate=128;
 time_start=-.2; % time pre heartbeat (200 ms)
-time_end=.3; %time post heartbeat (200 ms)
+time_end=.3; %time post heartbeat (300 ms)
 PS=squeeze(data(itrial,39,3*ECG_srate+1:end)); % plethysmograph; let's discard the 3 seconds baseline
 time_ECG=(0:length(PS)-1)/ECG_srate;
-figure;plot(time_ECG,PS);title('plethysmograph signal');
+%figure;plot(time_ECG,PS);title('plethysmograph signal');
 %% now let's detect R peaks from plethysmogram, we need to detrend the signal, and differentiate it twice
-lambda_max = l1tf_lambdamax(PS);
-[trend,status] = l1tf(PS, 0.001*lambda_max);
-PS_d=PS-trend;
-PS_dz=zscore(PS_d);
-ddPS=smooth(diff(PS_dz,2));
+ddPS  = PS2H( PS, ECG_srate );
 %%
-[pks,locs] = findpeaks(ddPS,ECG_srate,'MinPeakDistance',.4,'MinPeakHeight',.005);% look for peaks at least .4 sec away
+[pks,locs] = findpeaks(ddPS,ECG_srate,'MinPeakDistance',.6,'MinPeakHeight',.1);% look for peaks at least .4 sec away
 figure;plot(time_ECG(2:end-1),ddPS);hold on;scatter(locs,pks,'r');title('see if we got the peaks right')
+
 IBI=diff(locs); %interbeat interval
 min_IBI=min(IBI); %let's see what the shortest one is
 locs(1)=[];locs(end)=[]; % let's discard the first and last epoch
