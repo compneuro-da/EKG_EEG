@@ -1,4 +1,4 @@
-function WS  = PS2H( PS, ECG_srate )
+function [WS, PS_dz]  = PS2H( PS, ECG_srate )
 b=fir1(48,[0.8 2.8]/(ECG_srate/2));
 % PS = filtfilt(b,1,PS);
 lambda_max = l1tf_lambdamax(PS);
