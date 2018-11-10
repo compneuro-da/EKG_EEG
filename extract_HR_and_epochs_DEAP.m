@@ -5,8 +5,7 @@ load(['C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s' num2str(sub,'%02.0f
 % see http://www.eecs.qmul.ac.uk/mmv/datasets/deap/readme.html
 % data	40 x 40 x 8064	video/trial x channel x data
 % labels	40 x 4	video/trial x label (valence, arousal, dominance, liking)
-% channels have a different order in subs 23 to 32, here the index to
-% reorder them. We choose the Twente order and name.
+
 itrial=1; % here you choose a trial, eventually you can loop on it
 ECG_srate=128;
 time_start=-.2; % time pre heartbeat (200 ms)
