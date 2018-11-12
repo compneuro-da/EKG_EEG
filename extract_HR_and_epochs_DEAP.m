@@ -1,6 +1,6 @@
 clear;clc;close all
 load DEAP_chnames
-sub=1; %subject index, you can loop on this
+sub=2; %subject index, you can loop on this
 load(['C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s' num2str(sub,'%02.0f') '.mat']) %load the full dataset, change directory accordingly
 % see http://www.eecs.qmul.ac.uk/mmv/datasets/deap/readme.html
 % data	40 x 40 x 8064	video/trial x channel x data

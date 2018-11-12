@@ -7,12 +7,15 @@ EEG_srate=128;
 points_start=abs(floor(time_start*EEG_srate)); %number of points before HB
 points_end=abs(floor(time_end*EEG_srate)); %number of points after HB
 epoch_length=points_start+points_end;
+%HR_EEG_epochs=zeros(40,32,epoch_length,n_epochs); % vector of epochs, for 40 trials, same format as in Cohen's book
+
 for isub=1:32; %subject index, you can loop on this
     disp(isub);
     load(['C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s' num2str(isub,'%02.0f') '.mat']) %load the full dataset, change directory accordingly
     % see http://www.eecs.qmul.ac.uk/mmv/datasets/deap/readme.html
     % data	40 x 40 x 8064	video/trial x channel x data
     % labels	40 x 4	video/trial x label (valence, arousal, dominance, liking)
+
     % channels have a different order in subs 23 to 32, here the index to
     % reorder them. We choose the Twente order and name.
     for itrial=1:40; % here you choose a trial, eventually you can loop on it
@@ -39,7 +42,6 @@ for isub=1:32; %subject index, you can loop on this
         
         %% extract the epochs
         HB_points=ceil(locs*EEG_srate); %points in the EEG time series when the heartbeats happen
-        HR_EEG_epochs=zeros(40,nchan,epoch_length,n_epochs); % vector of epochs, for 40 trials, same format as in Cohen's book
         
         for i_epochs=1:n_epochs
             HR_EEG_epochs(itrial,:,:,i_epochs)=eeg(HB_points(i_epochs)-points_start:HB_points(i_epochs)+points_end-1,:)'; % transpose since channels have to be the first dimension
