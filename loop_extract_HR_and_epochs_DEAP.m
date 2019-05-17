@@ -2,12 +2,12 @@ clear;clc;close all
 load DEAP_chnames
 ECG_srate=128;
 time_start=-.2; % time pre heartbeat (200 ms)
-time_end=.6; %time post heartbeat (300 ms)
+time_end=.6; %time post heartbeat (600 ms)
 EEG_srate=128;
 points_start=abs(floor(time_start*EEG_srate)); %number of points before HB
 points_end=abs(floor(time_end*EEG_srate)); %number of points after HB
 epoch_length=points_start+points_end;
-%HR_EEG_epochs=zeros(40,32,epoch_length,n_epochs); % vector of epochs, for 40 trials, same format as in Cohen's book
+%HB_EEG_epochs=zeros(40,32,epoch_length,n_epochs); % vector of epochs, for 40 trials, same format as in Cohen's book
 
 for isub=1:32; %subject index, you can loop on this
     disp(isub);
@@ -16,8 +16,11 @@ for isub=1:32; %subject index, you can loop on this
     % data	40 x 40 x 8064	video/trial x channel x data
     % labels	40 x 4	video/trial x label (valence, arousal, dominance, liking)
 
-    % channels have a different order in subs 23 to 32, here the index to
-    % reorder them. We choose the Twente order and name.
+    %if isub ~= 1
+    %   clear HB_EEG_epochs
+    %   clear ratings
+    %end
+
     for itrial=1:40; % here you choose a trial, eventually you can loop on it
         
         PS=squeeze(data(itrial,39,:)); % plethysmograph;
@@ -25,7 +28,7 @@ for isub=1:32; %subject index, you can loop on this
         %% now let's detect R peaks from plethysmogram, we need to detrend the signal, and differentiate it twice
         [ddPS, PS]  = PS2H( PS, ECG_srate );
         %%
-        [pks,locs] = findpeaks(ddPS,ECG_srate,'MinPeakDistance',.6,'MinPeakHeight',.1);% look for peaks at least .4 sec away
+        [pks,locs] = findpeaks(ddPS,ECG_srate,'MinPeakDistance',.6,'MinPeakHeight',.1);% look for peaks at least .6 sec away
         
         IBI=diff(locs); %interbeat interval
         min_IBI=min(IBI); %let's see what the shortest one is
@@ -44,11 +47,35 @@ for isub=1:32; %subject index, you can loop on this
         HB_points=ceil(locs*EEG_srate); %points in the EEG time series when the heartbeats happen
         
         for i_epochs=1:n_epochs
-            HR_EEG_epochs(itrial,:,:,i_epochs)=eeg(HB_points(i_epochs)-points_start:HB_points(i_epochs)+points_end-1,:)'; % transpose since channels have to be the first dimension
+            HB_EEG_epochs(itrial,:,:,i_epochs)=eeg(HB_points(i_epochs)-points_start:HB_points(i_epochs)+points_end-1,:);
         end
+        
+        %if itrial == 1
+        %   for i_epochs = 1:n_epochs
+        %       HB_EEG_epochs(i_epochs,:,:) = eeg(HB_points(i_epochs)-points_start:HB_points(i_epochs)+points_end-1,:);
+        %   end
+        %   ratings = labels(repmat(itrial,n_epochs,1),:);
+        %else
+        %   for i_epochs = 1:n_epochs
+        %       epochs_temp = zeros(n_epochs,102,32);
+        %       epochs_temp(i_epochs,:,:) = eeg(HB_points(i_epochs)-points_start:HB_points(i_epochs)+points_end-1,:);
+        %   end   
+        %   HB_EEG_epochs = cat(1,HB_EEG_epochs,epochs_temp);
+        %   ratings_temp = labels(repmat(itrial,n_epochs,1),:);
+        %   ratings = cat(1,ratings,ratings_temp);
+        %end
         
     end
     %% save
-    savefile=['C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_HEP.mat'];
-    save(savefile,'HR_EEG_epochs');
+    avg_HEP = squeeze(mean(HB_EEG_epochs,4));
+    savefile=['C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_avgHEP.mat'];
+    save(savefile,'avg_HEP','labels');
+    % avg_HEP  video/trial x time x channel
+    % labels   video/trial x label (valence, arousal, dominance, liking)
+    
+    %savefile = ['C:\Users\dmarinaz\Documents\code\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_HEP.mat'];
+    %save(savefile,'HB_EEG_epochs','ratings');
+    % HB_EEG_epochs  HB/trial x time x channel
+    % ratings        HB/trial x label (valence, arousal, dominance, liking)
+    
 end
