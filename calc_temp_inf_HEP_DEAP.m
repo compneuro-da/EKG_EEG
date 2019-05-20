@@ -47,10 +47,7 @@ isub = 1;
     plot(time_int,MI(4,:))
     title('liking')
     
-    %% cross-temporal interaction information
-    t1 = 1;
-    t2 = 2;
-    
+    %% cross-temporal interaction information    
     II(:,:,4) = zeros(ntime_int,ntime_int);
     for r=1:4
         for t1=1:ntime_int
