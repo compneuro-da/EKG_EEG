@@ -48,23 +48,29 @@ isub = 1;
     title('liking')
     
     %% cross-temporal interaction information    
-    II(:,:,4) = zeros(ntime_int,ntime_int);
-    for r=1:4
+    II = zeros(ntime_int,ntime_int);
+    %for r=1:4
         for t1=1:ntime_int
-            MI1(r,t1) = mi_gg(cdat(:,t1),crat(:,r),true,true); % I have put this here because otherwise MI1 and MI2 don't have the same size
+            MI1(t1) = mi_gg(cdat(:,t1),crat(:,1),true,true); % I have put this here because otherwise MI1 and MI2 don't have the same size
             for t2=(t1+1):ntime_int
-                JMI(r,:) = mi_gg([cdat(:,t1) cdat(:,t2)],crat(:,r),true,true);
-                II(t1,t2,r) = JMI(r,:) - MI(r,t1) - MI(r,t2);     
-                
-                MI2(r,t2) = mi_gg(cdat(:,t2),crat(:,r),true,true);
-                RED = min(MI1,MI2);
-                U1 = MI1(r,t1) - RED;
-                U2 = MI2(r,t2) - RED;
-                %SYN = ;
+                MI2(t2) = mi_gg(cdat(:,t2),crat(:,1),true,true);
+                JMI = mi_gg([cdat(:,t1) cdat(:,t2)],crat(:,1),true,true);
+                II(t1,t2) = JMI - MI(1,t1) - MI(1,t2);     
             end
         end
-        II(:,:,r) = II(:,:,r) + II(:,:,r)';
-    end
+        
+        II = II + II';
+        RED = min(MI1,MI2);
+        U1 = MI1 - RED;
+        U2 = MI2 - RED;
+        
+        for t1=1:ntime_int 
+            for t2=(t1+1):ntime_int  
+                SYN(t1,t2) = JMI - RED - U1(t1) - U2(t2);
+            end
+        end
+    
+    %end
     
     %% plot II
     plottitle = sprintf('Interaction information (bits) - sub %02.0f', isub);
