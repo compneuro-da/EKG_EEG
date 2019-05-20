@@ -51,21 +51,13 @@ isub = 1;
     II(:,:,4) = zeros(ntime_int,ntime_int);
     for r=1:4
         for t1=1:ntime_int
-            MI1(r,t1) = MI(r,t1);
             for t2=(t1+1):ntime_int
-                MI2(r,t2) = MI(r,t2);
                 JMI(r,:) = mi_gg([cdat(:,t1) cdat(:,t2)],crat(:,r),true,true);
-                II(t1,t2,r) = JMI(r,:) - MI1(r,t1) - MI2(r,t2);       
+                II(t1,t2,r) = JMI(r,:) - MI(r,t1) - MI(r,t2);       
             end
         end
         II(:,:,r) = II(:,:,r) + II(:,:,r)';
     end
-    
-    % partial information decomposition
-    RED = min(MI1,MI2);
-    U1 = MI1 - RED;
-    U2 = MI2 - RED;
-    SYN = JMI - RED - U1 - U2;
     
     %% plot II
     plottitle = sprintf('Interaction information (bits) - sub %02.0f', isub);
@@ -88,5 +80,21 @@ isub = 1;
             title('liking')
         end
     end
+    
+    %% partial information decomposition
+    for r=1:4
+        for t1=1:ntime_int
+            MI1(r,t1) = mi_gg(cdat(:,t1),crat(:,r),true,true); % I have put this here, because otherwise the lengths of MI1 and MI2 aren't the same
+            for t2=t1+1:ntime_int
+                MI2(r,t2) = mi_gg(cdat(:,t2),crat(:,r),true,true);
+                JMI(r,:) = mi_gg([cdat(:,t1) cdat(:,t2)],crat(:,r),true,true);
+            end
+        end
+    end    
+    
+    RED = min(MI1,MI2);
+    U1 = MI1 - RED;
+    U2 = MI2 - RED;
+    SYN = JMI - RED - U1 - U2;
     
 %end
