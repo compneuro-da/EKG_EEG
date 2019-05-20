@@ -62,7 +62,7 @@ isub = 1;
         II = II + II';
         RED = min(MI1,MI2);
         U1 = MI1 - RED;
-        U2 = MI2 - RED;
+        U2 = MI2 - RED; % null matrix?
         
         for t1=1:ntime_int 
             for t2=(t1+1):ntime_int  
