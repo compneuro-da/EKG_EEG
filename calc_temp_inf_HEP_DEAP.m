@@ -14,70 +14,58 @@ isub = 1;
     srate = 128;
     time = time_start:1/srate:time_end-1/srate;
     
-    % time window we are interested in
-    timewindow = (time>.2) & (time<.6);
-    time_int = time(timewindow);
-    ntime_int = length(time_int);
-    
     %hep = squeeze(mean(dat,1));
     %plot(time,hep) 
     
+    % time window we are interested in
+    timewindow = (time>.2) & (time<.6);
+    time_info = time(timewindow);
+    ntime_info = length(time_info);
+    
     %% copula transform and MI
     cdat = copnorm(dat(:,timewindow));
-    crat = copnorm(ratings);
+    cratings = copnorm(ratings);
     
-    MI = zeros(4,ntime_int);
+    MI = zeros(4,ntime_info);
     for r=1:4 % loop over 4 labels
-        for t=1:ntime_int
-            MI(r,t) = mi_gg(cdat(:,t),crat(:,r),true,true);
+        for t=1:ntime_info
+            MI(r,t) = mi_gg(cdat(:,t),cratings(:,r),true,true);
         end
     end
     
     %% plot MI
     subplot(4,1,1)
-    plot(time_int,MI(1,:))
+    plot(time_info,MI(1,:))
     title('valence')
     subplot(4,1,2)
-    plot(time_int,MI(2,:))
+    plot(time_info,MI(2,:))
     title('arousal')
     subplot(4,1,3)
-    plot(time_int,MI(3,:))
+    plot(time_info,MI(3,:))
     title('dominance')
     subplot(4,1,4)
-    plot(time_int,MI(4,:))
+    plot(time_info,MI(4,:))
     title('liking')
     
-    %% cross-temporal interaction information    
-    II = zeros(ntime_int,ntime_int);
-    %for r=1:4
-        for t1=1:ntime_int
-            MI1(t1) = mi_gg(cdat(:,t1),crat(:,1),true,true); % I have put this here because otherwise MI1 and MI2 don't have the same size
-            for t2=(t1+1):ntime_int
-                MI2(t2) = mi_gg(cdat(:,t2),crat(:,1),true,true);
-                JMI = mi_gg([cdat(:,t1) cdat(:,t2)],crat(:,1),true,true);
-                II(t1,t2) = JMI - MI(1,t1) - MI(1,t2);     
+    %% cross-temporal interaction information 
+    JMI = zeros(4,1);
+    II = zeros(ntime_info,ntime_info,4);
+    for r=1:4
+        for t1=1:ntime_info
+            for t2=(t1+1):ntime_info
+                JMI(r,:) = mi_gg([cdat(:,t1) cdat(:,t2)],cratings(:,r),true,true);
+                II(t1,t2,r) = JMI(r,:) - MI(r,t1) - MI(r,t2);     
             end
         end
-        
-        II = II + II';
-        RED = min(MI1,MI2);
-        U1 = MI1 - RED;
-        U2 = MI2 - RED; % null matrix?
-        
-        for t1=1:ntime_int 
-            for t2=(t1+1):ntime_int  
-                SYN(t1,t2) = JMI - RED - U1(t1) - U2(t2);
-            end
-        end
-    
-    %end
+        II(:,:,r) = II(:,:,r) + II(:,:,r)';
+    end
     
     %% plot II
     plottitle = sprintf('Interaction information (bits) - sub %02.0f', isub);
     suptitle(plottitle)
     for r=1:4
         subplot(2,2,r);
-        imagesc(time_int,time_int,II(:,:,r))
+        imagesc(time_info,time_info,II(:,:,r))
         colormap parula
         colorbar
         axis square
@@ -93,5 +81,7 @@ isub = 1;
             title('liking')
         end
     end
+    
+    %% partial information decomposition
    
 %end
