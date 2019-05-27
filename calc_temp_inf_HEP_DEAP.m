@@ -83,5 +83,26 @@ isub = 1;
     end
     
     %% partial information decomposition
-   
+    % see Faes et al., 2017; Ince, 2017
+    % II = JMI - MI1 - MI2;
+    % RED = min(MI1,MI2);
+    % U1 = MI1 - RED;
+    % U2 = MI2 - RED;
+    % SYN = JMI - RED - U1 - U2;
+    
+    II = zeros(ntime_info,ntime_info);
+    for t1=1:ntime_info
+        for t2=(t1+1):ntime_info
+            JMI = mi_gg([cdat(:,t1) cdat(:,t2)],cratings(:,1),true,true);
+            II(t1,t2) = JMI - MI(1,t1) - MI(1,t2);
+            
+            RED(t1,t2) = min(MI(1,t1),MI(1,t2));
+            U1(t1) = MI(1,t1) - RED(t1,t2);
+            U2(t2) = MI(1,t2) - RED(t1,t2);
+            SYN(t1,t2) = JMI - RED(t1,t2) - U1(t1) - U2(t2);
+        end
+    end
+    II = II + II';
+    SYN = SYN + SYN';
+    
 %end
