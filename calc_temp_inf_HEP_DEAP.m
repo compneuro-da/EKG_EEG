@@ -100,8 +100,8 @@ isub = 1;
             U1(t1) = MI(1,t1) - RED(t1,t2);
             U2(t2) = MI(1,t2) - RED(t1,t2);
             SYN(t1,t2) = JMI - RED(t1,t2) - U1(t1) - U2(t2);
-            A = zeros(1,50);
-            SYN = [SYN ; A];
+            extrarow = zeros(1,50);
+            SYN = [SYN ; extrarow];
         end
     end
     II = II + II';
