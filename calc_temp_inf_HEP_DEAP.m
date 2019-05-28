@@ -109,6 +109,11 @@ isub = 1;
     RED = [RED ; extrarow];
     RED = RED + RED';
     
+    diagonal = NaN(1,50);
+    n = size(SYN,1);
+    SYN(1:(n+1):end) = diagonal;
+    RED(1:(n+1):end) = diagonal;
+    
     %% plot PI
     plottitle = sprintf('Partial information - sub %02.0f', isub);
     suptitle(plottitle)
