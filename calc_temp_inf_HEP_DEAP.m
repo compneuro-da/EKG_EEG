@@ -82,7 +82,7 @@ isub = 1;
         end
     end
     
-    %% partial information decomposition
+    %% partial information decomposition (only valence for now)
     % see Faes et al., 2017; Ince, 2017
     % II = JMI - MI1 - MI2;
     % RED = min(MI1,MI2);
@@ -100,9 +100,22 @@ isub = 1;
             U1(t1) = MI(1,t1) - RED(t1,t2);
             U2(t2) = MI(1,t2) - RED(t1,t2);
             SYN(t1,t2) = JMI - RED(t1,t2) - U1(t1) - U2(t2);
+            A = zeros(1,50);
+            SYN = [SYN ; A];
         end
     end
     II = II + II';
     SYN = SYN + SYN';
+    
+    %% plot synergy
+    figure
+    plottitle = sprintf('Synergy (bits) - sub %02.0f', isub);
+    title(plottitle)
+    imagesc(time_info,time_info,SYN)
+    colormap parula
+    colorbar
+    axis square
+    xlabel('Time (ms)')
+    ylabel('Time (ms)')
     
 %end
