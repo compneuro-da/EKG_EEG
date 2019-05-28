@@ -106,16 +106,27 @@ isub = 1;
     extrarow = zeros(1,50);
     SYN = [SYN ; extrarow]; % to have a square matrix
     SYN = SYN + SYN';
+    RED = [RED ; extrarow];
+    RED = RED + RED';
     
-    %% plot synergy
-    figure
-    plottitle = sprintf('Synergy (bits) - sub %02.0f', isub);
-    title(plottitle)
-    imagesc(time_info,time_info,SYN)
+    %% plot PI
+    plottitle = sprintf('Partial information - sub %02.0f', isub);
+    suptitle(plottitle)
+    subplot(1,2,1);
+    imagesc(time_info,time_info,SYN(:,:))
     colormap parula
     colorbar
     axis square
     xlabel('Time (ms)')
     ylabel('Time (ms)')
+    title('Synergy (bits)')
+    subplot(1,2,2);
+    imagesc(time_info,time_info,RED(:,:))
+    colormap parula
+    colorbar
+    axis square
+    xlabel('Time (ms)')
+    ylabel('Time (ms)')
+    title('Redundancy (bits)')
     
 %end
