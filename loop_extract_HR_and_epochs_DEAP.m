@@ -23,7 +23,7 @@ for isub=1:32; %subject index, you can loop on this
 
     for itrial=1:40; % here you choose a trial, eventually you can loop on it
         
-        PS=squeeze(data(itrial,39,:)); % plethysmograph;
+        PS=squeeze(data(itrial,39,3*ECG_srate+1:end)); % plethysmograph; discard the 3 s baseline
         time_ECG=(0:length(PS)-1)/ECG_srate;
         %% now let's detect R peaks from plethysmogram, we need to detrend the signal, and differentiate it twice
         [ddPS, PS]  = PS2H( PS, ECG_srate );
@@ -37,7 +37,7 @@ for isub=1:32; %subject index, you can loop on this
         locs=locs-mean(IBI)/5; % shift locations back in time since the second derivative of the Plethysmogram sugnal comes later than the R peak
         n_epochs=length(locs);
         %% now let's load the EEG
-        eeg=squeeze(data(itrial,1:32,:))';
+        eeg=squeeze(data(itrial,1:32,3*ECG_srate+1:end))'; % discard the 3 s baseline
         eeg=zscore(eeg);
         [npoints, nchan]=size(eeg);
         %epoch_length=floor(min_IBI*EEG_srate); % the length of the heartbeat evoked potential is equal to the shortest interbeat interval
