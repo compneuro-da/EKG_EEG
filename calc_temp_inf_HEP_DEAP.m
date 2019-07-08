@@ -89,3 +89,25 @@ for isub = 1:32
     %savefile = ['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_I.mat'];
     %save(savefile,'hep','MI','II','SYN','RED');
 end
+
+%% calculate averages
+for isub = 1:32
+    load(['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_I.mat'])
+    if isub == 1
+       hep_tot = hep;
+       MI_tot = MI;
+       II_tot = II;
+       RED_tot = RED;
+       SYN_tot = SYN;
+    else
+       hep_tot = cat(1,hep_tot,hep);
+       MI_tot = cat(3,MI_tot,MI);
+       II_tot = cat(4,II_tot,II);
+       RED_tot = cat(4,RED_tot,RED);
+       SYN_tot = cat(4,SYN_tot,SYN);
+    end
+end
+
+II_avg = squeeze(mean(II_tot,4));
+RED_avg = squeeze(mean(RED_tot,4));
+SYN_avg = squeeze(mean(SYN_tot,4));
