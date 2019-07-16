@@ -17,10 +17,8 @@ for isub = 1:32 % subject index
     
     % set to zero for each subject
     avg_HEP = zeros(40,epoch_length,32);
-    if isub ~= 1
-       clear HB_trials
-       clear ratings
-    end
+    clear HB_trials
+    clear ratings
     %%
     for itrial = 1:40 % choose a trial        
         %%
@@ -46,9 +44,7 @@ for isub = 1:32 % subject index
         time_EEG = (0:length(eeg)-1)/EEG_srate;
         
         %% extract the epochs
-        if itrial ~= 1
-           clear HB_EEG_epochs % clear each iteration because every trial has a different number of epochs
-        end
+        clear HB_EEG_epochs % clear each iteration because every trial has a different number of epochs
         
         HB_points = ceil(locs*EEG_srate); % points in the EEG time series when the heartbeats happen
         for i_epochs=1:n_epochs
