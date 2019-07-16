@@ -1,13 +1,15 @@
 clear;clc;close all
 load DEAP_chnames
 isub = 1;
-load(['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_I.mat'])
+load(['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_avgHEP_I.mat']) % load data, change directory accordingly
 
-nlbls = size(MI,1);
+chan = 24; % choose an electrode
+nlbls = 4;
 time_start = -.2;
 time_end = .6;
 srate = 128;
 time_epoch = time_start:1/srate:time_end-1/srate;
+ntime_epoch = length(time_epoch);
 % time window we are interested in
 timewindow = (time_epoch>.2) & (time_epoch<.6);
 time_info = time_epoch(timewindow);
@@ -52,8 +54,8 @@ for l=1:nlbls
      end
 end
 
-%% plot HEP together with previous plot (for each label individually)
-l = 3; % choose label
+%% plot MI (or HEP) together with previous plot (for each label individually)
+l = 1; % choose label
 xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
 plottitle = sprintf('Temporal interaction information (bits) - sub %02.0f', isub);
@@ -75,7 +77,7 @@ else
 end
 lw = 2;
 subplot(5,5,[22 23 24 25])
-plot(time_info,hep,'k','LineWidth',lw);
+plot(time_info,MI(l,:),'k','LineWidth',lw);
 axis tight
 xlim(xl)
 intpos = get(axm,'Pos');
@@ -85,7 +87,7 @@ pos(3) = intpos(3);
 set(gca,'Pos',pos)
 box off
 subplot(5,5,[1 6 11 16])
-plot(time_info,hep,'k','LineWidth',lw);
+plot(time_info,MI(l,:),'k','LineWidth',lw);
 axis tight
 box off
 xlim(xl)
@@ -137,7 +139,7 @@ else
 end
 lw = 2;
 subplot(5,5,[22 23 24 25])
-plot(time_info,hep,'k','LineWidth',lw);
+plot(time_info,MI(l,:),'k','LineWidth',lw);
 axis tight
 xlim(xl)
 intpos = get(axm,'Pos');
@@ -147,7 +149,7 @@ pos(3) = intpos(3);
 set(gca,'Pos',pos)
 box off
 subplot(5,5,[1 6 11 16])
-plot(time_info,hep,'k','LineWidth',lw);
+plot(time_info,MI(l,:),'k','LineWidth',lw);
 axis tight
 box off
 xlim(xl)
@@ -199,7 +201,7 @@ else
 end
 lw = 2;
 subplot(5,5,[22 23 24 25])
-plot(time_info,hep,'k','LineWidth',lw);
+plot(time_info,MI(l,:),'k','LineWidth',lw);
 axis tight
 xlim(xl)
 intpos = get(axm,'Pos');
@@ -209,7 +211,7 @@ pos(3) = intpos(3);
 set(gca,'Pos',pos)
 box off
 subplot(5,5,[1 6 11 16])
-plot(time_info,hep,'k','LineWidth',lw);
+plot(time_info,MI(l,:),'k','LineWidth',lw);
 axis tight
 box off
 xlim(xl)
