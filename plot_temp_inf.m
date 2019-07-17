@@ -1,9 +1,7 @@
 clear;clc;close all
-load DEAP_chnames
-isub = 1;
-load(['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_avgHEP_I.mat']) % load data, change directory accordingly
-
-chan = 24; % choose an electrode
+%%
+% code to plot the temporal information quantities; first load the data you want to plot
+% you can change, for instance, II (to plot a single sub) to II_tot and vice versa
 nlbls = 4;
 time_start = -.2;
 time_end = .6;
@@ -31,7 +29,7 @@ plot(time_info,MI(4,:))
 title('Liking')
 
 %% plot temporal II
-plottitle = sprintf('Temporal interaction information (bits) - sub %02.0f', isub);
+plottitle = sprintf('Temporal interaction information (bits)');
 suptitle(plottitle)
 for l=1:nlbls
      subplot(2,2,l);
@@ -55,10 +53,10 @@ for l=1:nlbls
 end
 
 %% plot MI (or HEP) together with previous plot (for each label individually)
-l = 1; % choose label
+l = 3; % choose label
 xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
-plottitle = sprintf('Temporal interaction information (bits) - sub %02.0f', isub);
+plottitle = sprintf('Temporal interaction information (bits)');
 suptitle(plottitle)
 imagesc(time_info,time_info,II(:,:,l))
 colormap parula
@@ -94,7 +92,7 @@ xlim(xl)
 set(gca,'CameraUpVector',[-1 0 0])
 
 %% plot temporal synergy
-plottitle = sprintf('Temporal synergy (bits) - sub %02.0f', isub);
+plottitle = sprintf('Temporal synergy (bits)');
 suptitle(plottitle)
 for l=1:nlbls
     subplot(2,2,l);
@@ -120,7 +118,7 @@ end
 l = 1; % choose label
 xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
-plottitle = sprintf('Temporal synergy (bits) - sub %02.0f', isub);
+plottitle = sprintf('Temporal synergy (bits)');
 suptitle(plottitle)
 imagesc(time_info,time_info,SYN(:,:,l))
 colormap parula
@@ -156,7 +154,7 @@ xlim(xl)
 set(gca,'CameraUpVector',[-1 0 0])
 
 %% plot temporal redundancy
-plottitle = sprintf('Temporal redundancy (bits) - sub %02.0f', isub);
+plottitle = sprintf('Temporal redundancy (bits)');
 suptitle(plottitle)
 for l=1:nlbls
     subplot(2,2,l);
@@ -182,7 +180,7 @@ end
 l = 1; % choose label
 xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
-plottitle = sprintf('Temporal redundancy (bits) - sub %02.0f', isub);
+plottitle = sprintf('Temporal redundancy (bits)');
 suptitle(plottitle)
 imagesc(time_info,time_info,RED(:,:,l))
 colormap parula
