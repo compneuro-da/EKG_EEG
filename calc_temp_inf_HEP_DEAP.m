@@ -29,14 +29,13 @@ for isub = 1:32
        %ratings_tot = cat(1,ratings_tot,ratings);
     end
     
-    %% initialization
     dat = avg_HEP(:,timewindow,chan);
     %dat = HB_trials(:,timewindow,chan);
     [ntrls,~] = size(dat);
     
     HEP = squeeze(mean(dat,1));
     %plot(time_info,HEP)
-    
+ 
     %% copula transform and calculate mutual information (MI) at each time point
     cdat = copnorm(dat);
     cratings = copnorm(labels);
@@ -107,7 +106,7 @@ for isub = 1:32
     save(savefile,'HEP','MI','II','SYN','RED');
 end
 
-%% calculate overall temporal information
+%% calculate temporal information over all subjects
 dat_tot = avg_HEP_tot(:,timewindow,chan);
 %dat_tot = HB_trials_tot(:,timewindow,chan);
 [ntrls_tot,~] = size(dat_tot);
@@ -167,3 +166,7 @@ end
 II_tot(II_tot==0)=NaN;
 SYN_tot(SYN_tot==0)=NaN;
 RED_tot(RED_tot==0)=NaN;
+
+savefile = '\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\tot_avgHEP_I.mat';
+%savefile = '\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\tot_HEP_I.mat';
+save(savefile,'HEP_tot','MI_tot','II_tot','SYN_tot','RED_tot');
