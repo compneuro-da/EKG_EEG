@@ -54,9 +54,9 @@ for t1=1:ntime_info
                  
                  hp = II_perm;
                  
-                 if hp>h0
+                 if h0>0 && hp>h0
                     ncont=ncont+1;
-                 elseif hp<h0
+                 elseif h0<0 && hp<h0
                     ncont=ncont+1;
                  end
              end
