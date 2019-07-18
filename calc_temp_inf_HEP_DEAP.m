@@ -32,7 +32,7 @@ for isub = 1:32
     dat = avg_HEP(:,timewindow,chan);
     %dat = HB_trials(:,timewindow,chan);
     [ntrls,~] = size(dat);
-    
+ 
     HEP = squeeze(mean(dat,1));
     %plot(time_info,HEP)
  
@@ -125,22 +125,8 @@ for l=1:nlbls % loop over 4 labels
         MI_tot(l,t) = mi_gg(cdat_tot(:,t),cratings_tot(:,l),false);
     end
 end
-
-% cross-temporal interaction information (II)
-JMI_tot = zeros(nlbls,1);
-II_tot = zeros(ntime_info,ntime_info,nlbls);
-for l=1:nlbls
-    for t1=1:ntime_info
-        for t2=(t1+1):ntime_info
-            JMI_tot(l,:) = mi_gg([cdat_tot(:,t1) cdat_tot(:,t2)],cratings_tot(:,l),false);
-            II_tot(t1,t2,l) = JMI_tot(l,:) - MI_tot(l,t1) - MI_tot(l,t2);
-        end
-    end
-    II_tot(:,:,l) = II_tot(:,:,l) + II_tot(:,:,l)';
-end
-II_tot(II_tot==0)=NaN;
   
-% partial information decomposition (PID)
+% cross-temporal interaction information (II) and PID
 JMI_tot = zeros(nlbls,1);
 II_tot = zeros(ntime_info,ntime_info,nlbls);
 RED_tot = zeros(ntime_info,ntime_info,nlbls);
@@ -167,6 +153,7 @@ II_tot(II_tot==0)=NaN;
 SYN_tot(SYN_tot==0)=NaN;
 RED_tot(RED_tot==0)=NaN;
 
+%% save results
 savefile = '\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\tot_avgHEP_I.mat';
 %savefile = '\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\tot_HEP_I.mat';
 save(savefile,'HEP_tot','MI_tot','II_tot','SYN_tot','RED_tot');
