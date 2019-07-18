@@ -1,7 +1,7 @@
 clear;clc;close all
 %%
-% code to plot the temporal information quantities; first load the data you want to plot
-% you can change, for instance, II (to plot a single sub) to II_tot and vice versa
+% code to plot the temporal information quantities
+% first load the data you want to plot (and change variable names if necessary)
 nlbls = 4;
 time_start = -.2;
 time_end = .6;
@@ -16,16 +16,16 @@ ntime_info = length(time_info);
 %% plot MI at each time point
 suptitle('Mutual information (MI)');
 subplot(4,1,1)
-plot(time_info,MI(1,:))
+plot(time_info,MI_tot(1,:))
 title('Valence')
 subplot(4,1,2)
-plot(time_info,MI(2,:))
+plot(time_info,MI_tot(2,:))
 title('Arousal')
 subplot(4,1,3)
-plot(time_info,MI(3,:))
+plot(time_info,MI_tot(3,:))
 title('Dominance')
 subplot(4,1,4)
-plot(time_info,MI(4,:))
+plot(time_info,MI_tot(4,:))
 title('Liking')
 
 %% plot temporal II
@@ -33,8 +33,8 @@ plottitle = sprintf('Temporal interaction information (bits)');
 suptitle(plottitle)
 for l=1:nlbls
      subplot(2,2,l);
-     imagesc(time_info,time_info,II(:,:,l))
-     colormap parula
+     imagesc(time_info,time_info,II_tot(:,:,l))
+     colormap(brewermap([],'*RdBu'));
      colorbar
      axis square
      xlabel('Time (ms)')
@@ -53,13 +53,13 @@ for l=1:nlbls
 end
 
 %% plot MI (or HEP) together with previous plot (for each label individually)
-l = 3; % choose label
+l = 1; % choose label
 xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
 plottitle = sprintf('Temporal interaction information (bits)');
 suptitle(plottitle)
-imagesc(time_info,time_info,II(:,:,l))
-colormap parula
+imagesc(time_info,time_info,II_tot(:,:,l))
+colormap(brewermap([],'*RdBu'));
 colorbar
 axis square
 xlabel('Time (ms)')
@@ -75,7 +75,7 @@ else
 end
 lw = 2;
 subplot(5,5,[22 23 24 25])
-plot(time_info,MI(l,:),'k','LineWidth',lw);
+plot(time_info,MI_tot(l,:),'k','LineWidth',lw);
 axis tight
 xlim(xl)
 intpos = get(axm,'Pos');
@@ -85,7 +85,7 @@ pos(3) = intpos(3);
 set(gca,'Pos',pos)
 box off
 subplot(5,5,[1 6 11 16])
-plot(time_info,MI(l,:),'k','LineWidth',lw);
+plot(time_info,MI_tot(l,:),'k','LineWidth',lw);
 axis tight
 box off
 xlim(xl)
@@ -96,8 +96,8 @@ plottitle = sprintf('Temporal synergy (bits)');
 suptitle(plottitle)
 for l=1:nlbls
     subplot(2,2,l);
-    imagesc(time_info,time_info,SYN(:,:,l))
-    colormap parula
+    imagesc(time_info,time_info,SYN_tot(:,:,l))
+    colormap(brewermap([],'Reds'));
     colorbar
     axis square 
     xlabel('Time (ms)')
@@ -120,8 +120,8 @@ xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
 plottitle = sprintf('Temporal synergy (bits)');
 suptitle(plottitle)
-imagesc(time_info,time_info,SYN(:,:,l))
-colormap parula
+imagesc(time_info,time_info,SYN_tot(:,:,l))
+colormap(brewermap([],'Reds'));
 colorbar
 axis square
 xlabel('Time (ms)')
@@ -137,7 +137,7 @@ else
 end
 lw = 2;
 subplot(5,5,[22 23 24 25])
-plot(time_info,MI(l,:),'k','LineWidth',lw);
+plot(time_info,MI_tot(l,:),'k','LineWidth',lw);
 axis tight
 xlim(xl)
 intpos = get(axm,'Pos');
@@ -147,7 +147,7 @@ pos(3) = intpos(3);
 set(gca,'Pos',pos)
 box off
 subplot(5,5,[1 6 11 16])
-plot(time_info,MI(l,:),'k','LineWidth',lw);
+plot(time_info,MI_tot(l,:),'k','LineWidth',lw);
 axis tight
 box off
 xlim(xl)
@@ -158,8 +158,8 @@ plottitle = sprintf('Temporal redundancy (bits)');
 suptitle(plottitle)
 for l=1:nlbls
     subplot(2,2,l);
-    imagesc(time_info,time_info,RED(:,:,l))
-    colormap parula
+    imagesc(time_info,time_info,RED_tot(:,:,l))
+    colormap(brewermap([],'Blues'));
     colorbar
     axis square 
     xlabel('Time (ms)')
@@ -182,8 +182,8 @@ xl = [.2 .6];
 axm = subplot(5,5,[2 3 4 5 7 8 9 10 12 13 14 15 17 18 19 20]);
 plottitle = sprintf('Temporal redundancy (bits)');
 suptitle(plottitle)
-imagesc(time_info,time_info,RED(:,:,l))
-colormap parula
+imagesc(time_info,time_info,RED_tot(:,:,l))
+colormap(brewermap([],'Blues'));
 colorbar
 axis square
 xlabel('Time (ms)')
@@ -199,7 +199,7 @@ else
 end
 lw = 2;
 subplot(5,5,[22 23 24 25])
-plot(time_info,MI(l,:),'k','LineWidth',lw);
+plot(time_info,MI_tot(l,:),'k','LineWidth',lw);
 axis tight
 xlim(xl)
 intpos = get(axm,'Pos');
@@ -209,7 +209,7 @@ pos(3) = intpos(3);
 set(gca,'Pos',pos)
 box off
 subplot(5,5,[1 6 11 16])
-plot(time_info,MI(l,:),'k','LineWidth',lw);
+plot(time_info,MI_tot(l,:),'k','LineWidth',lw);
 axis tight
 box off
 xlim(xl)
