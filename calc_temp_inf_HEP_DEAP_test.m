@@ -13,7 +13,8 @@ ntime_info = length(time_info);
 
 nperm = 1000; % number of permutations
 pval = 0.05;
-%pcorr = pval*6/(3*(3-1)*(3-2)); % Bonferroni correction for triplets
+%ntr = 50; % number of triplets
+%pcorr = pval*6/(ntr*(ntr-1)*(ntr-2)); % Bonferroni correction for triplets
 
 %% load the data
 for isub = 1:32
@@ -29,62 +30,43 @@ end
 dat_tot = avg_HEP_tot(:,timewindow,chan);
 [ntrls_tot,~] = size(dat_tot);
 
-%% copula transform and calculate mutual information (MI) at each time point
+%%
 cdat_tot = copnorm(dat_tot);
-cratings_tot = copnorm(labels_tot(:,1));
+cratings_tot = copnorm(labels_tot(:,3));
 
 MI_tot = zeros(1,ntime_info);
 for t=1:ntime_info
     MI_tot(t) = mi_gg(cdat_tot(:,t),cratings_tot(:,1),false);
 end
 
-% cross-temporal interaction information (II)
-II_tot = zeros(ntime_info,ntime_info);
 for t1=1:ntime_info
      for t2=(t1+1):ntime_info
          JMI_tot = mi_gg([cdat_tot(:,t1) cdat_tot(:,t2)],cratings_tot(:,1),false);
-         II_tot(t1,t2) = JMI_tot - MI_tot(t1) - MI_tot(t2);
+         II_tot = JMI_tot - MI_tot(t1) - MI_tot(t2);
+         
+         h0 = II_tot;
+         n = length(cratings_tot);
+         ncont = 0;
+         
+         if h0 == 0
+            h(t1,t2) = 0;
+         else
+             for i = 1:nperm
+                 cratings_tot(:,1) = cratings_tot(randperm(n));
+                 JMI_tot = mi_gg([cdat_tot(:,t1) cdat_tot(:,t2)],cratings_tot(:,1),false);
+                 II_tot = JMI_tot - mi_gg(cdat_tot(:,t1),cratings_tot(:,1),false) - mi_gg(cdat_tot(:,t2),cratings_tot(:,1),false);
+                 hp = II_tot;
+                 if hp>h0
+                    ncont=ncont+1;
+                 elseif hp<h0
+                    ncont=ncont+1;
+                 end
+             end
+             if ncont>pval*nperm
+                h(t1,t2) = 0;
+             else
+                h(t1,t2) = h0;
+             end
+         end
      end
-end
-II_tot(:,:) = II_tot(:,:) + II_tot(:,:)';
-II_tot(II_tot==0)=NaN;
-
-%% test 
-h0 = II_tot;
-n = length(cratings_tot);
-ncont = 0;
-h = zeros(ntime_info,ntime_info);
-
-if h0 == 0
-   h = 0;
-else
-   for i = 1:nperm
-       cratings_tot(:,1) = cratings_tot(randperm(n));
-       MI_tot = zeros(1,ntime_info);
-       for t=1:ntime_info
-           MI_tot(t) = mi_gg(cdat_tot(:,t),cratings_tot(:,1),false);
-       end
-       II_tot = zeros(ntime_info,ntime_info);
-       for t1=1:ntime_info
-           for t2=(t1+1):ntime_info
-               JMI_tot = mi_gg([cdat_tot(:,t1) cdat_tot(:,t2)],cratings_tot(:,1),false);
-               II_tot(t1,t2) = JMI_tot - MI_tot(t1) - MI_tot(t2);
-           end
-       end
-       II_tot(:,:) = II_tot(:,:) + II_tot(:,:)';
-       II_tot(II_tot==0)=NaN;
-       
-       h = II_tot;
-       if h>h0
-          ncont = ncont+1;
-       end
-       if h<h0
-          ncont = ncont+1;
-       end
-   end
-   if ncont>pval*nperm
-      h = 0;
-   else
-      h = h0;
-   end
 end
