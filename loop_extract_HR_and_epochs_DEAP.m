@@ -10,7 +10,7 @@ epoch_length = points_start + points_end;
 %%
 for isub = 1:32 % subject index
     disp(isub);
-    load(['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '.mat']) % load the full dataset, change directory accordingly
+    load(['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '.mat']) % load the full dataset, change directory accordingly
     % see http://www.eecs.qmul.ac.uk/mmv/datasets/deap/readme.html
     % data      40 x 40 x 8064	video/trial x channel (32 EEG + 8 phys) x data (63 s at 128 Hz)
     % labels	40 x 4          video/trial x label (valence, arousal, dominance, liking)
@@ -66,14 +66,14 @@ for isub = 1:32 % subject index
     %% save
     
     % save average HEP per music video
-    savefile = ['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_avgHEP.mat'];
+    savefile = ['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_avgHEP.mat'];
     save(savefile,'avg_HEP','labels');
     % avg_HEP    40 x 102 x 32    video/trial x data x channel
     % labels     40 x 4		      video/trial x label (valence, arousal, dominance, liking)
-
-    % save individual epochs
-    savefile = ['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_HEP.mat'];
-    save(savefile,'HB_trials','ratings');
+    
+    % you can also save the individual epochs
+    %savefile = ['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_HEP.mat'];
+    %save(savefile,'HB_trials','ratings');
     % HB_trials  .... x 102 x 32  HB/trial x data x channel
     % ratings    .... x 4		  HB/trial x label (valence, arousal, dominance, liking)
     

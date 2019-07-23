@@ -1,7 +1,7 @@
 clear;clc;close all
 load DEAP_chnames
 sub = 1; % subject index
-load(['\\client\d$\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(sub,'%02.0f') '.mat']) % load the full dataset, change directory accordingly
+load(['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(sub,'%02.0f') '.mat']) % load the full dataset, change directory accordingly
 % see http://www.eecs.qmul.ac.uk/mmv/datasets/deap/readme.html
 % data      40 x 40 x 8064	video/trial x channel (32 EEG + 8 phys) x data (63 s at 128 Hz)
 % labels	40 x 4          video/trial x label (valence, arousal, dominance, liking)
