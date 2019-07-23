@@ -21,7 +21,6 @@ for isub = 1:32
     if isub == 1
        title('Heartbeat-evoked potential (one trial)')
        plot(time_epoch*1000,avg_HEP(40,:,24),'-o');
-       caxis([-0.0025,0.0025])
        xlabel('Time (ms)')
     end
     
