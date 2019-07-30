@@ -16,13 +16,8 @@ ntime_info = length(time_info);
 for isub = 1:32
     disp(isub);
     load(['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\s' num2str(isub,'%02.0f') '_avgHEP.mat']) % load data, change directory accordingly
-    
-    % plot example of HEP for one trial
-    if isub == 1
-       title('Heartbeat-evoked potential (one trial)')
-       plot(time_epoch*1000,avg_HEP(40,:,24),'-o');
-       xlabel('Time (ms)')
-    end
+    % avg_HEP   40 x 102 x 32	video/trial x data x channel
+    % labels	40 x 4          video/trial x label (valence, arousal, dominance, liking)
     
     if isub == 1
        avg_HEP_tot = avg_HEP;
@@ -33,11 +28,11 @@ for isub = 1:32
     end
     
     for ichan = 1:nchan
+        HEP = squeeze(mean(avg_HEP(:,:,chans(ichan)),1));
+        %plot(time_epoch,HEP)
+        
         dat = avg_HEP(:,timewindow,chans(ichan));
         [ntrls,~] = size(dat);
-        
-        HEP = squeeze(mean(dat,1));
-        %plot(time_info,HEP)
         
         %% copula transform and calculate mutual information (MI) at each time point
         cdat = copnorm(dat);
@@ -65,7 +60,7 @@ for isub = 1:32
         end
         
         %% partial information decomposition (PID)
-        % see Faes, Marinazzo, & Stramaglia (2017)
+        % see https://www.mdpi.com/1099-4300/19/8/408
         % JMI = gcmi_cc(t,[d1 d2]) with t = target, d1 = source, d2 = source
         % MI1 = gcmi_cc(t,d1)
         % MI2 = gcmi_cc(t,d2)
@@ -107,11 +102,11 @@ end
 
 %% calculate temporal information over all subjects
 for ichan = 1:nchan
+    HEP_tot = squeeze(mean(avg_HEP_tot(:,:,chans(ichan)),1));
+    %plot(time_epoch,HEP_tot)
+    
     dat_tot = avg_HEP_tot(:,timewindow,chans(ichan));
     [ntrls_tot,~] = size(dat_tot);
-    
-    HEP_tot = squeeze(mean(dat_tot,1));
-    %plot(time_info,HEP_tot)
     
     % copula transform and calculate mutual information (MI) at each time point
     cdat_tot = copnorm(dat_tot);
@@ -155,114 +150,98 @@ end
 
 
 %% plot the temporal information quantities
+ichan = 1; % choose a channel
+load(['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\tot_I_' char(ch_labels(chans(ichan))) '.mat'])
 time_plot = time_info*1000;
-for ichan = 1%:nchan
-    load(['D:\Users\Liesa\Documents\Universiteit Gent\Theoretische en experimentele psychologie\MA05\05 J\5 Masterproef II\DEAP\preprocessed\tot_I_' char(ch_labels(chans(ichan))) '.mat'])
+
+%% plot HEP and MI
+subplot(5,1,1)
+plot(time_plot,HEP_tot(:,timewindow),'k','LineWidth',1.25)
+title('HEP')
+xlabel('Time (ms)')
+subplot(5,1,2)
+plot(time_plot,MI_tot(1,:),'k','LineWidth',1.25)
+title('MI (valence)')
+xlabel('Time (ms)')
+subplot(5,1,3)
+plot(time_plot,MI_tot(2,:),'k','LineWidth',1.25)
+title('MI (arousal)')
+xlabel('Time (ms)')
+subplot(5,1,4)
+plot(time_plot,MI_tot(3,:),'k','LineWidth',1.25)
+title('MI (dominance)')
+xlabel('Time (ms)')
+subplot(5,1,5)
+plot(time_plot,MI_tot(4,:),'k','LineWidth',1.25)
+title('MI (liking)')
+xlabel('Time (ms)')
+
+%% plot temporal II
+plottitle = sprintf('Temporal interaction information (bits)');
+suptitle(plottitle)
+for l=1:nlbls
+    subplot(2,2,l);
+    imagesc(time_plot,time_plot,II_tot(:,:,l))
+    colormap(brewermap([],'*RdBu'));
+    colorbar
+    axis square
+    lim = max(abs(min(min(II_tot(:,:,l)))),max(max(II_tot(:,:,l))));
+    caxis([-lim,lim]) % center zero
+    xlabel('Time (ms)'),ylabel('Time (ms)')
     
-    %% plot temporal II
-    plottitle = sprintf('Temporal interaction information (bits)');
-    suptitle(plottitle)
-    for l=1:nlbls
-        subplot(2,2,l);
-        imagesc(time_plot,time_plot,II_tot(:,:,l))
-        colormap(brewermap([],'*RdBu'));
-        colorbar
-        axis square
-        xlabel('Time (ms)')
-        ylabel('Time (ms)')
-        
-        %max(max(II_tot(:,:,l))) % check max values
-        %min(min(II_tot(:,:,l))) % check min values
-        if l == 1
-           title('Valence')
-           if ichan == 1
-              caxis([-0.0020,0.0020])
-           elseif ichan == 2
-              caxis([-0.0015,0.0015])
-           else
-              caxis([-0.0025,0.0025])
-           end
-        elseif l == 2
-           title('Arousal')
-           if ichan == 1
-              caxis([-0.0035,0.0035])
-           elseif ichan == 2
-              caxis([-0.0030,0.0030])
-           else
-              caxis([-0.0020,0.0020])
-           end
-        elseif l == 3
-           title('Dominance')
-           if ichan == 1
-              caxis([-0.0035,0.0035])
-           elseif ichan == 2
-              caxis([-0.0045,0.0045])
-           else
-              caxis([-0.0065,0.0065])
-           end
-        else
-           title('Liking')
-           if ichan == 1
-              caxis([-0.0025,0.0025])
-           elseif ichan == 2
-              caxis([-0.0030,0.0030])
-           else
-              caxis([-0.0025,0.0025])
-           end
-        end
+    if l == 1
+       title('Valence')
+    elseif l == 2
+       title('Arousal')
+    elseif l == 3
+       title('Dominance')
+    else
+       title('Liking')
     end
+end
+
+%% plot temporal synergy
+plottitle = sprintf('Temporal synergy (bits)');
+suptitle(plottitle)
+for l=1:nlbls
+    subplot(2,2,l);
+    imagesc(time_plot,time_plot,SYN_tot(:,:,l))
+    colormap(brewermap([],'Reds'));
+    colorbar
+    axis square 
+    caxis([0,max(max(SYN_tot(:,:,l)))])
+    xlabel('Time (ms)'),ylabel('Time (ms)')
     
-    %% plot temporal synergy
-    plottitle = sprintf('Temporal synergy (bits)');
-    suptitle(plottitle)
-    for l=1:nlbls
-        subplot(2,2,l);
-        imagesc(time_plot,time_plot,SYN_tot(:,:,l))
-        colormap(brewermap([],'Reds'));
-        colorbar
-        axis square 
-        xlabel('Time (ms)')
-        ylabel('Time (ms)')
-        
-        if l==1
-           title('Valence')
-           caxis([0,max(max(SYN_tot(:,:,l)))])
-        elseif l==2
-           title('Arousal')
-           caxis([0,max(max(SYN_tot(:,:,l)))])
-        elseif l==3
-           title('Dominance')
-           caxis([0,max(max(SYN_tot(:,:,l)))])
-        else
-           title('Liking')
-           caxis([0,max(max(SYN_tot(:,:,l)))])
-        end
+    if l==1
+       title('Valence')
+    elseif l==2
+       title('Arousal')
+    elseif l==3
+       title('Dominance')
+    else
+       title('Liking')
     end
+end
+
+%% plot temporal redundancy
+plottitle = sprintf('Temporal redundancy (bits)');
+suptitle(plottitle)
+for l=1:nlbls
+    subplot(2,2,l);
+    imagesc(time_plot,time_plot,RED_tot(:,:,l))
+    colormap(brewermap([],'Blues'));
+    colorbar
+    axis square 
+    caxis([0,max(max(RED_tot(:,:,l)))])
+    xlabel('Time (ms)'),ylabel('Time (ms)')
     
-    %% plot temporal redundancy
-    plottitle = sprintf('Temporal redundancy (bits)');
-    suptitle(plottitle)
-    for l=1:nlbls
-        subplot(2,2,l);
-        imagesc(time_plot,time_plot,RED_tot(:,:,l))
-        colormap(brewermap([],'Blues'));
-        colorbar
-        axis square 
-        xlabel('Time (ms)')
-        ylabel('Time (ms)')
-        
-        if l==1
-            title('Valence')
-            caxis([0,max(max(RED_tot(:,:,l)))])
-        elseif l==2
-            title('Arousal')
-            caxis([0,max(max(RED_tot(:,:,l)))])
-        elseif l==3
-            title('Dominance')
-            caxis([0,max(max(RED_tot(:,:,l)))])
-        else
-            title('Liking')
-            caxis([0,max(max(RED_tot(:,:,l)))])
-        end
+    if l==1
+       title('Valence')
+    elseif l==2
+       title('Arousal')
+    elseif l==3
+       title('Dominance')
+    else
+       title('Liking')
     end
 end
