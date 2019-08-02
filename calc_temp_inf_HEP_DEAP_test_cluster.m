@@ -42,6 +42,11 @@ for t1=1:ntime_info
         JMI_tot = mi_gg([cdat_tot(:,t1) cdat_tot(:,t2)],cratings_tot(:,1),false);
         II_tot = JMI_tot - mi_gg(cdat_tot(:,t1),cratings_tot(:,1),false) - mi_gg(cdat_tot(:,t2),cratings_tot(:,1),false);
         
+        RED_tot = min(mi_gg(cdat_tot(:,t1),cratings_tot(:,1),false),mi_gg(cdat_tot(:,t2),cratings_tot(:,1),false));
+        U1_tot = mi_gg(cdat_tot(:,t1),cratings_tot(:,1),false) - RED_tot;
+        U2_tot = mi_gg(cdat_tot(:,t2),cratings_tot(:,1),false) - RED_tot;
+        SYN_tot = JMI_tot - U1_tot - U2_tot - RED_tot;
+        
         h0(t1,t2) = II_tot;
         n = length(cratings_tot);
         
@@ -49,6 +54,11 @@ for t1=1:ntime_info
             cratings_perm(:,1) = cratings_tot(randperm(n));
             JMI_perm = mi_gg([cdat_tot(:,t1) cdat_tot(:,t2)],cratings_perm(:,1),false);
             II_perm = JMI_perm - mi_gg(cdat_tot(:,t1),cratings_perm(:,1),false) - mi_gg(cdat_tot(:,t2),cratings_perm(:,1),false);
+            
+            RED_perm = min(mi_gg(cdat_tot(:,t1),cratings_perm(:,1),false),mi_gg(cdat_tot(:,t2),cratings_perm(:,1),false));
+            U1_perm = mi_gg(cdat_tot(:,t1),cratings_perm(:,1),false) - RED_perm;
+            U2_perm = mi_gg(cdat_tot(:,t2),cratings_perm(:,1),false) - RED_perm;
+            SYN_perm = JMI_perm - U1_perm - U2_perm - RED_perm;
             
             hp(t1,t2,iperm) = II_perm;
         end
